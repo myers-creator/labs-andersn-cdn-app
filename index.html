@@ -100,12 +100,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border-bottom: 1px dashed #1f2937;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
         }
         .vendor-name {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: bold;
             color: #ffffff;
             font-family: Arial, sans-serif;
@@ -118,10 +118,37 @@
             font-size: 11px;
             text-transform: uppercase;
         }
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            background: #0a0d10;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #1f2937;
+        }
+        .price-row label {
+            font-size: 11px;
+            color: #8892b0;
+            text-transform: uppercase;
+        }
+        .price-row input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #00ff66;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 2px;
+            outline: none;
+        }
         .grid-days {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
+            margin-bottom: 12px;
         }
         .day-box {
             display: flex;
@@ -148,17 +175,31 @@
             border-color: #00ff66;
             box-shadow: 0 0 5px rgba(0,255,102,0.5);
         }
-        .vendor-total {
-            margin-top: 10px;
-            text-align: right;
-            font-size: 12px;
+        .vendor-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 255, 102, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 255, 102, 0.15);
+            font-size: 13px;
+        }
+        .total-weight-text {
             color: #8892b0;
+        }
+        .total-weight-text span {
+            color: #ffffff;
             font-weight: bold;
         }
-        .vendor-total span {
-            color: #00ff66;
-            font-size: 14px;
-            text-shadow: 0 0 5px rgba(0,255,102,0.4);
+        .total-pay-text {
+            color: #39ff14;
+            font-weight: bold;
+            text-align: right;
+        }
+        .total-pay-text span {
+            font-size: 15px;
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
         }
         .clear-all-btn {
             margin-top: 15px;
@@ -180,29 +221,30 @@
 
     <div class="header">
         <h1>LABS</h1>
-        <p>Control de Pesajes Multiuso</p>
+        <p>Control de Compras & Liquidación</p>
     </div>
 
     <div class="setup-box">
-        <input type="text" id="newVendorName" placeholder="Nombre..." autocomplete="off">
+        <input type="text" id="newVendorName" placeholder="Nombre del vendedor..." autocomplete="off">
         <select id="vendorUnit">
-            <option value="kg">Kilos</option>
             <option value="@">Arrobas (@)</option>
-            <option value="Lb">Libras</option>
+            <option value="kg">Kilos (kg)</option>
+            <option value="Lb">Libras (Lb)</option>
             <option value=" ">Neutro</option>
         </select>
-        <button class="btn-add" onclick="addVendor()">+ Ok</button>
+        <button class="btn-add" onclick="addVendor()">+ Añadir</button>
     </div>
 
     <div class="vendors-container" id="vendorsContainer"></div>
 
-    <button class="clear-all-btn" onclick="clearAllData()">Resetear Todo el Sistema</button>
+    <button class="clear-all-btn" onclick="clearAllData()">Resetear Registro de Compras</button>
 
     <script>
-        let vendors = JSON.parse(localStorage.getItem('labs_matrix_vendors')) || [];
+        // Inicializar base de datos local
+        let vendors = JSON.parse(localStorage.getItem('labs_matrix_trade')) || [];
 
         function saveState() {
-            localStorage.setItem('labs_matrix_vendors', JSON.stringify(vendors));
+            localStorage.setItem('labs_matrix_trade', JSON.stringify(vendors));
         }
 
         function addVendor() {
@@ -215,6 +257,7 @@
                 id: 'v_' + Date.now(),
                 name: name,
                 unit: selectUnit.value,
+                price: '', 
                 weights: { lunes: '', martes: '', miercoles: '', jueves: '', viernes: '', sabado: '' }
             };
 
@@ -226,7 +269,7 @@
         }
 
         function deleteVendor(id) {
-            if (confirm('¿Eliminar registro de este usuario?')) {
+            if (confirm('¿Deseas eliminar este vendedor y todos sus registros de compra?')) {
                 vendors = vendors.filter(v => v.id !== id);
                 saveState();
                 renderVendors();
@@ -238,21 +281,45 @@
             if (vendor) {
                 vendor.weights[day] = value;
                 saveState();
-                calculateTotal(vendorId);
+                calculateTotals(vendorId);
             }
         }
 
-        function calculateTotal(vendorId) {
+        function updatePrice(vendorId, value) {
+            const vendor = vendors.find(v => v.id === vendorId);
+            if (vendor) {
+                vendor.price = value;
+                saveState();
+                calculateTotals(vendorId);
+            }
+        }
+
+        function calculateTotals(vendorId) {
             const vendor = vendors.find(v => v.id === vendorId);
             if (!vendor) return;
-            
-            let total = 0;
+
+            // Sumatoria de peso de la semana
+            let totalWeight = 0;
             for (let day in vendor.weights) {
                 let val = parseFloat(vendor.weights[day].replace(',', '.'));
-                if (!isNaN(val)) total += val;
+                if (!isNaN(val)) totalWeight += val;
             }
-            
-            document.getElementById(`total_${vendorId}`).innerText = total.toFixed(1);
+
+            // Cálculo financiero exacto
+            let priceVal = parseFloat(vendor.price.replace(',', '.'));
+            let totalPay = 0;
+            if (!isNaN(priceVal) && totalWeight > 0) {
+                totalPay = totalWeight * priceVal;
+            }
+
+            // Inyección de datos en la interfaz
+            document.getElementById(`weight_${vendorId}`).innerText = totalWeight.toFixed(1);
+            document.getElementById(`pay_${vendorId}`).innerText = new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(totalPay);
         }
 
         function renderVendors() {
@@ -260,13 +327,19 @@
             container.innerHTML = '';
 
             vendors.forEach(vendor => {
-                let totalInitial = 0;
+                let totalWeightInitial = 0;
                 for (let day in vendor.weights) {
                     let val = parseFloat(vendor.weights[day].replace(',', '.'));
-                    if (!isNaN(val)) totalInitial += val;
+                    if (!isNaN(val)) totalWeightInitial += val;
                 }
 
-                const currentUnit = vendor.unit !== undefined ? vendor.unit : 'kg';
+                let priceInitial = parseFloat(vendor.price.replace(',', '.'));
+                let totalPayInitial = 0;
+                if (!isNaN(priceInitial) && totalWeightInitial > 0) {
+                    totalPayInitial = totalWeightInitial * priceInitial;
+                }
+
+                const currentUnit = vendor.unit !== undefined ? vendor.unit : '@';
 
                 const card = document.createElement('div');
                 card.className = 'vendor-card';
@@ -275,6 +348,16 @@
                         <span class="vendor-name">${vendor.name}</span>
                         <button class="btn-del" onclick="deleteVendor('${vendor.id}')">Eliminar</button>
                     </div>
+
+                    <div class="price-row">
+                        <label>Precio Compra x ${currentUnit === ' ' ? 'Unidad' : currentUnit}:</label>
+                        <input type="text" 
+                               inputmode="numeric" 
+                               placeholder="Ej: 135000" 
+                               value="${vendor.price}" 
+                               oninput="updatePrice('${vendor.id}', this.value)">
+                    </div>
+
                     <div class="grid-days">
                         ${['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'].map(day => `
                             <div class="day-box">
@@ -282,17 +365,21 @@
                                 <input type="text" 
                                        inputmode="decimal" 
                                        class="weight-input"
-                                       data-vendor="${vendor.id}" 
-                                       data-day="${day}" 
                                        value="${vendor.weights[day]}" 
                                        placeholder="0"
                                        oninput="updateWeight('${vendor.id}', '${day}', this.value)">
                             </div>
                         `).join('')}
                     </div>
-                    <div class="vendor-total">Total Semana: <span id="total_${vendor.id}">${totalInitial.toFixed(1)}</span> ${currentUnit}</div>
+
+                    <div class="vendor-summary">
+                        <div class="total-weight-text">Total Recibido: <span id="weight_${vendor.id}">${totalWeightInitial.toFixed(1)}</span> ${currentUnit}</div>
+                        <div class="total-pay-text">Total a Pagar: <span id="pay_${vendor.id}">$0</span></div>
+                    </div>
                 `;
                 container.appendChild(card);
+                
+                calculateTotals(vendor.id);
             });
 
             setupNavigation();
@@ -312,7 +399,7 @@
         }
 
         function clearAllData() {
-            if (confirm('¿Deseas resetear la base de datos por completo?')) {
+            if (confirm('¿ADVERTENCIA: Deseas resetear por completo el registro de compras semanal?')) {
                 vendors = [];
                 saveState();
                 renderVendors();
@@ -323,7 +410,7 @@
             renderVendors();
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
-                    .then(() => console.log('SW Activo'))
+                    .then(() => console.log('SW Sincronizado'))
                     .catch(err => console.error('SW Error', err));
             }
         });
