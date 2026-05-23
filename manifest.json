@@ -1,0 +1,21 @@
+{
+  "short_name": "Labs.Andersn",
+  "name": "Labs.Andersn.cdn - Mobile Ledger",
+  "start_url": "./index.html",
+  "background_color": "#070a07",
+  "theme_color": "#00e676",
+  "display": "standalone",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='192' height='192'><rect width='512' height='512' rx='140' fill='%230f140f'/><text x='50%' y='62%' font-family='monospace' font-size='180' font-weight='black' fill='%2300e676' text-anchor='middle'>LABS</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='512' height='512'><rect width='512' height='512' rx='140' fill='%230f140f'/><text x='50%' y='62%' font-family='monospace' font-size='180' font-weight='black' fill='%2300e676' text-anchor='middle'>LABS</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
