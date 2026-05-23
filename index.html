@@ -2,264 +2,188 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Labs.Andersn.cdn</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="manifest" href="manifest.json">
     <style>
-        body { background-color: #070a07; color: #e2e8f0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
-        .input-mobile {
-            background-color: #0f140f;
-            border: 2px solid #1c261c;
-            color: #fff;
-            font-size: 16px !important; /* Evita el auto-zoom molesto en iOS/Android */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        .input-mobile:focus {
-            border-color: #00e676;
-            background-color: #131a13;
+        body {
+            background-color: #0a0d10;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 26px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
+        }
+        .header p {
+            color: #8892b0;
+            font-size: 11px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: #11161d;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+        }
+        .day-row {
+            margin-bottom: 14px;
+        }
+        .day-row:last-child {
+            margin-bottom: 0;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            color: #39ff14;
+            letter-spacing: 1px;
+        }
+        input {
+            width: 100%;
+            background-color: #0a0d10;
+            border: 1px solid #00ff66;
+            border-radius: 6px;
+            padding: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
             outline: none;
+            transition: all 0.2s ease;
         }
-        .input-error { border-color: #ef4444 !important; background-color: #261212 !important; }
+        input:focus {
+            box-shadow: 0 0 12px rgba(0, 255, 102, 0.6);
+            border-color: #ffffff;
+            background-color: #121820;
+        }
+        .clear-btn {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 480px;
+            background: transparent;
+            border: 1px dashed #ff3333;
+            color: #ff3333;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        .clear-btn:hover {
+            background: rgba(255, 51, 51, 0.1);
+        }
     </style>
 </head>
-<body class="p-3 min-h-screen flex flex-col justify-between select-none">
+<body>
 
-    <!-- ENCABEZADO MÓVIL COMPACTO -->
-    <header class="mb-4 flex justify-between items-center border-b border-[#1c261c] pb-3">
-        <div>
-            <h1 class="text-lg font-black text-[#00e676] tracking-tight font-mono">
-                 Labs.Andersn.cdn 
-            </h1>
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest">Mobile Matrix Ledger</p>
+    <div class="header">
+        <h1>LABS</h1>
+        <p>Registro de Operaciones (Lun - Sáb)</p>
+    </div>
+
+    <div class="container">
+        <div class="day-row">
+            <label for="lunes">Lunes</label>
+            <input type="text" id="lunes" class="day-input" placeholder="Datos del lunes...">
         </div>
-        <button id="btn-limpiar" class="bg-red-950/30 active:bg-red-900/60 border border-red-900/60 text-red-400 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all">
-            Limpiar
-        </button>
-    </header>
-
-    <!-- FORMULARIO VERTICAL ADAPTADO A PULGAR -->
-    <section class="bg-[#0f140f] p-3.5 rounded-xl border border-[#1c261c] mb-4 shadow-xl">
-        <div class="flex flex-col gap-3">
-            <div>
-                <label class="block text-[11px] text-gray-400 font-medium mb-1 uppercase tracking-wider">Vendedor</label>
-                <input type="text" id="vendedor" class="w-full p-3 rounded-xl input-mobile font-medium" placeholder="Escriba nombre" autocomplete="off">
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-[11px] text-gray-400 font-medium mb-1 uppercase tracking-wider">Pesaje Neto</label>
-                    <input type="number" step="0.01" inputmode="decimal" id="peso" class="w-full p-3 rounded-xl input-mobile font-mono text-[#00e676] font-bold" placeholder="0.00">
-                </div>
-                <div>
-                    <label class="block text-[11px] text-gray-400 font-medium mb-1 uppercase tracking-wider">Medida</label>
-                    <!-- Selector Switch Táctil en vez de Dropdown -->
-                    <div class="grid grid-cols-2 bg-[#070a07] p-1 rounded-xl border border-[#1c261c] h-[50px]">
-                        <button id="btn-kg" class="rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-md">KG</button>
-                        <button id="btn-arroba" class="rounded-lg text-xs font-bold transition-all text-gray-400">@</button>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-[11px] text-gray-400 font-medium mb-1 uppercase tracking-wider">Precio Unitario ($)</label>
-                <input type="number" inputmode="numeric" id="precio" class="w-full p-3 rounded-xl input-mobile font-mono text-white font-bold" placeholder="Valor de esta carga">
-            </div>
-
-            <button id="btn-agregar" class="w-full bg-[#00e676] active:bg-[#00b357] text-black font-black p-3.5 rounded-xl text-sm transition-all shadow-lg shadow-green-950/40 uppercase tracking-wider mt-1">
-                Registrar Fila ↑
-            </button>
+        <div class="day-row">
+            <label for="martes">Martes</label>
+            <input type="text" id="martes" class="day-input" placeholder="Datos del martes...">
         </div>
-    </section>
+        <div class="day-row">
+            <label for="miercoles">Miércoles</label>
+            <input type="text" id="miercoles" class="day-input" placeholder="Datos del miércoles...">
+        </div>
+        <div class="day-row">
+            <label for="jueves">Jueves</label>
+            <input type="text" id="jueves" class="day-input" placeholder="Datos del jueves...">
+        </div>
+        <div class="day-row">
+            <label for="viernes">Viernes</label>
+            <input type="text" id="viernes" class="day-input" placeholder="Datos del viernes...">
+        </div>
+        <div class="day-row">
+            <label for="sabado">Sábado</label>
+            <input type="text" id="sabado" class="day-input" placeholder="Datos del sábado...">
+        </div>
+    </div>
 
-    <!-- MATRIZ DE REGISTROS MÓVIL EN TIEMPO REAL -->
-    <main class="flex-grow overflow-y-auto bg-[#070a07] rounded-xl border border-[#1c261c] max-h-[300px] min-h-[180px]">
-        <table class="w-full text-left border-collapse">
-            <thead class="sticky top-0 bg-[#0f140f] shadow-sm z-10">
-                <tr class="text-[10px] text-gray-400 border-b border-[#1c261c] uppercase tracking-wider">
-                    <th class="p-3">Nombre</th>
-                    <th class="p-3">Carga</th>
-                    <th class="p-3 text-right">Liquidación</th>
-                    <th class="p-3 text-center">X</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-cuerpo" class="text-xs divide-y divide-[#131a13]">
-                <!-- Registros inyectados -->
-            </tbody>
-        </table>
-    </main>
-
-    <!-- PANEL DE TOTALES MASIVOS FLOTANTE -->
-    <footer class="mt-4 bg-[#0f140f] border border-[#1c261c] p-4 rounded-xl grid grid-cols-3 gap-2 text-center shadow-2xl">
-        <div>
-            <p class="text-[9px] text-gray-400 uppercase font-medium">Total KG</p>
-            <p id="total-kg" class="text-base font-mono font-bold text-white mt-0.5">0.00</p>
-        </div>
-        <div class="border-x border-[#1c261c]">
-            <p class="text-[9px] text-gray-400 uppercase font-medium">Total Arrobas</p>
-            <p id="total-arrobas" class="text-base font-mono font-bold text-purple-400 mt-0.5">0.00</p>
-        </div>
-        <div>
-            <p class="text-[9px] text-gray-400 uppercase font-medium">Caja Total</p>
-            <p id="total-dinero" class="text-base font-mono font-black text-[#00e676] mt-0.5">$0</p>
-        </div>
-    </footer>
+    <button class="clear-btn" onclick="clearLogs()">Limpiar Toda la Semana</button>
 
     <script>
-        let baseDatos = JSON.parse(localStorage.getItem('labs_andersn_cdn_data')) || [];
-        const ARROBA_A_KG = 12.5;
-        let unidadSeleccionada = 'kg'; // Estado nativo de unidad
+        const inputs = document.querySelectorAll('.day-input');
 
-        const inputs = {
-            vendedor: document.getElementById('vendedor'),
-            peso: document.getElementById('peso'),
-            precio: document.getElementById('precio')
-        };
-        const btnKg = document.getElementById('btn-kg');
-        const btnArroba = document.getElementById('btn-arroba');
-        const btnAgregar = document.getElementById('btn-agregar');
-        const btnLimpiar = document.getElementById('btn-limpiar');
-        const tablaCuerpo = document.getElementById('tabla-cuerpo');
-
-        const lblTotalKg = document.getElementById('total-kg');
-        const lblTotalArrobas = document.getElementById('total-arrobas');
-        const lblTotalDinero = document.getElementById('total-dinero');
-
-        // Manejo del Switch Táctil (KG / @)
-        btnKg.addEventListener('click', () => cambiarUnidad('kg'));
-        btnArroba.addEventListener('click', () => cambiarUnidad('arroba'));
-
-        function cambiarUnidad(unidad) {
-            unidadSeleccionada = unidad;
-            if (unidad === 'kg') {
-                btnKg.className = "rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-md";
-                btnArroba.className = "rounded-lg text-xs font-bold transition-all text-gray-400";
-            } else {
-                btnArroba.className = "rounded-lg text-xs font-bold transition-all bg-purple-600 text-white shadow-md";
-                btnKg.className = "rounded-lg text-xs font-bold transition-all text-gray-400";
-            }
-        }
-
-        // Generador de audiofrecuencias nativo offline
-        function sonar(tipo) {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain); gain.connect(ctx.destination);
-                if (tipo === 'ok') {
-                    osc.frequency.setValueAtTime(880, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
-                    osc.start(); osc.stop(ctx.currentTime + 0.07);
-                } else {
-                    osc.frequency.setValueAtTime(200, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-                    osc.start(); osc.stop(ctx.currentTime + 0.15);
-                }
-            } catch(e){}
-        }
-
-        // Limpieza automática de estados rojos al escribir
-        Object.values(inputs).forEach(inp => {
-            inp.addEventListener('input', () => inp.classList.remove('input-error'));
-        });
-
-        // ENRUTADOR DE TECLA ENTER (FLUJO INFINITO MÓVIL)
-        inputs.vendedor.addEventListener('keydown', (e) => { if(e.key === 'Enter' && inputs.vendedor.value.trim() !== "") inputs.peso.focus(); });
-        inputs.peso.addEventListener('keydown', (e) => { if(e.key === 'Enter' && inputs.peso.value !== "") inputs.precio.focus(); });
-        inputs.precio.addEventListener('keydown', (e) => { if(e.key === 'Enter') procesarTransaccion(); });
-        btnAgregar.addEventListener('click', procesarTransaccion);
-
-        function procesarTransaccion() {
-            let errorDetectado = false;
-            const vendedor = inputs.vendedor.value.trim();
-            const peso = parseFloat(inputs.peso.value);
-            const precio = parseFloat(inputs.precio.value);
-
-            if (!vendedor) { inputs.vendedor.classList.add('input-error'); errorDetectado = true; }
-            if (isNaN(peso) || peso <= 0) { inputs.peso.classList.add('input-error'); errorDetectado = true; }
-            if (isNaN(precio) || precio <= 0) { inputs.precio.classList.add('input-error'); errorDetectado = true; }
-
-            if (errorDetectado) {
-                sonar('fail');
-                return;
-            }
-
-            const totalCalculado = peso * precio;
-
-            baseDatos.push({
-                id: Date.now(),
-                vendedor,
-                peso,
-                unidad: unidadSeleccionada,
-                precio,
-                total: totalCalculado
-            });
-
-            sonar('ok');
-            actualizarMatriz();
-
-            // REINICIO DE CASILLAS Y BAJADA AUTOMÁTICA DEL CURSOR AL SIGUIENTE REGISTRO
-            inputs.vendedor.value = "";
-            inputs.peso.value = "";
-            inputs.precio.value = "";
-            
-            // Obliga al navegador del celular a mantener el foco abajo en el primer campo del siguiente vendedor
-            setTimeout(() => {
-                inputs.vendedor.focus();
-            }, 50);
-        }
-
-        function borrarFila(id) {
-            baseDatos = baseDatos.filter(item => item.id !== id);
-            actualizarMatriz();
-        }
-
-        btnLimpiar.addEventListener('click', () => {
-            if (confirm("¿Purgar todos los datos de Labs.Andersn.cdn?")) {
-                baseDatos = [];
-                actualizarMatriz();
-            }
-        });
-
-        function actualizarMatriz() {
-            localStorage.setItem('labs_andersn_cdn_data', JSON.stringify(baseDatos));
-            
-            tablaCuerpo.innerHTML = baseDatos.map(item => `
-                <tr class="border-b border-[#131a13]">
-                    <td class="p-3 font-bold text-white tracking-tight">${item.vendedor}</td>
-                    <td class="p-3 font-mono font-medium">${item.peso.toFixed(1)}<span class="text-[9px] font-bold ml-0.5 ${item.unidad === 'kg' ? 'text-blue-400' : 'text-purple-400'}">${item.unidad === 'kg' ? 'KG' : '@'}</span></td>
-                    <td class="p-3 font-mono text-right font-bold text-emerald-400">$${item.total.toLocaleString('es-CO')}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="borrarFila(${item.id})" class="text-red-500 active:text-red-400 text-sm px-2 py-1 font-bold">✕</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            let kgTotales = 0;
-            let arrobasTotales = 0;
-            let dineroTotal = 0;
-
-            baseDatos.forEach(item => {
-                dineroTotal += item.total;
-                if (item.unidad === 'kg') {
-                    kgTotales += item.peso;
-                    arrobasTotales += (item.peso / ARROBA_A_KG);
-                } else {
-                    arrobasTotales += item.peso;
-                    kgTotales += (item.peso * ARROBA_A_KG);
+        // 1. Cargar la memoria local de cada día al abrir la app
+        window.addEventListener('load', () => {
+            inputs.forEach(input => {
+                const savedData = localStorage.getItem('labs_' + input.id);
+                if (savedData) {
+                    input.value = savedData;
                 }
             });
+            // Pone el foco automáticamente en el Lunes al arrancar
+            if(inputs[0]) inputs[0].focus();
+        });
 
-            lblTotalKg.textContent = kgTotales.toFixed(1);
-            lblTotalArrobas.textContent = arrobasTotales.toFixed(1);
-            lblTotalDinero.textContent = `$${dineroTotal.toLocaleString('es-CO')}`;
+        // 2. Monitorear escritura y controlar el flujo del ENTER
+        inputs.forEach((input, index) => {
+            // Guarda en caliente mientras el usuario escribe
+            input.addEventListener('input', () => {
+                localStorage.setItem('labs_' + input.id, input.value);
+            });
+
+            // Bucle infinito con la tecla Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Detiene funciones por defecto
+                    const nextIndex = (index + 1) % inputs.length; // Al llegar a sábado (index 5) vuelve a lunes (index 0)
+                    inputs[nextIndex].focus();
+                }
+            });
+        });
+
+        // 3. Función táctica para resetear la tabla limpia
+        function clearLogs() {
+            if (confirm('¿Deseas resetear por completo los registros de la semana?')) {
+                inputs.forEach(input => {
+                    input.value = '';
+                    localStorage.removeItem('labs_' + input.id);
+                });
+                inputs[0].focus();
+            }
         }
 
-        // Carga inicial retenida
-        actualizarMatriz();
-
+        // 4. Registro del Service Worker para soporte Fuera de Línea (Offline)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log("Offline pasivo"));
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW Operativo'))
+                    .catch(err => console.error('Fallo SW', err));
             });
         }
     </script>
