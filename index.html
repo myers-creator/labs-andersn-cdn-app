@@ -15,7 +15,7 @@
             background-color: #0a0d10;
             color: #00ff66;
             font-family: 'Courier New', Courier, monospace;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -23,10 +23,10 @@
         }
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .header h1 {
-            font-size: 26px;
+            font-size: 24px;
             letter-spacing: 3px;
             text-transform: uppercase;
             text-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
@@ -34,68 +34,133 @@
         .header p {
             color: #8892b0;
             font-size: 11px;
-            margin-top: 5px;
+            margin-top: 3px;
             text-transform: uppercase;
         }
-        .container {
+        .setup-box {
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             background: #11161d;
             border: 1px solid #1f2937;
-            border-radius: 10px;
-            padding: 18px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.7);
-        }
-        .day-row {
-            margin-bottom: 14px;
-        }
-        .day-row:last-child {
-            margin-bottom: 0;
-        }
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            color: #39ff14;
-            letter-spacing: 1px;
-        }
-        input {
-            width: 100%;
-            background-color: #0a0d10;
-            border: 1px solid #00ff66;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 12px;
-            color: #ffffff;
-            font-size: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        .setup-box input {
+            flex: 1;
+            background: #0a0d10;
+            border: 1px solid #00ff66;
+            border-radius: 4px;
+            padding: 10px;
+            color: #fff;
+            font-size: 14px;
             font-family: Arial, sans-serif;
             outline: none;
-            transition: all 0.2s ease;
         }
-        input:focus {
-            box-shadow: 0 0 12px rgba(0, 255, 102, 0.6);
-            border-color: #ffffff;
-            background-color: #121820;
+        .btn-add {
+            background: #00ff66;
+            color: #0a0d10;
+            border: none;
+            padding: 0 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-family: inherit;
         }
-        .clear-btn {
-            margin-top: 20px;
+        .vendors-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
+        }
+        .vendor-card {
+            background: #11161d;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .vendor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #1f2937;
+            padding-bottom: 6px;
+        }
+        .vendor-name {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        .btn-del {
+            background: transparent;
+            color: #ff3333;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        .grid-days {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .day-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .day-box label {
+            font-size: 11px;
+            color: #39ff14;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+        .day-box input {
+            background: #0a0d10;
+            border: 1px solid #1f2937;
+            border-radius: 4px;
+            padding: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .day-box input:focus {
+            border-color: #00ff66;
+            box-shadow: 0 0 5px rgba(0,255,102,0.5);
+        }
+        .vendor-total {
+            margin-top: 10px;
+            text-align: right;
+            font-size: 12px;
+            color: #8892b0;
+            font-weight: bold;
+        }
+        .vendor-total span {
+            color: #00ff66;
+            font-size: 14px;
+            text-shadow: 0 0 5px rgba(0,255,102,0.4);
+        }
+        .clear-all-btn {
+            margin-top: 15px;
+            width: 100%;
+            max-width: 500px;
             background: transparent;
             border: 1px dashed #ff3333;
             color: #ff3333;
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-family: inherit;
             text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 1px;
-            transition: all 0.2s;
-        }
-        .clear-btn:hover {
-            background: rgba(255, 51, 51, 0.1);
+            font-family: inherit;
         }
     </style>
 </head>
@@ -103,89 +168,156 @@
 
     <div class="header">
         <h1>LABS</h1>
-        <p>Registro de Operaciones (Lun - Sáb)</p>
+        <p>Control de Pesajes por Vendedor</p>
     </div>
 
-    <div class="container">
-        <div class="day-row">
-            <label for="lunes">Lunes</label>
-            <input type="text" id="lunes" class="day-input" placeholder="Datos del lunes...">
-        </div>
-        <div class="day-row">
-            <label for="martes">Martes</label>
-            <input type="text" id="martes" class="day-input" placeholder="Datos del martes...">
-        </div>
-        <div class="day-row">
-            <label for="miercoles">Miércoles</label>
-            <input type="text" id="miercoles" class="day-input" placeholder="Datos del miércoles...">
-        </div>
-        <div class="day-row">
-            <label for="jueves">Jueves</label>
-            <input type="text" id="jueves" class="day-input" placeholder="Datos del jueves...">
-        </div>
-        <div class="day-row">
-            <label for="viernes">Viernes</label>
-            <input type="text" id="viernes" class="day-input" placeholder="Datos del viernes...">
-        </div>
-        <div class="day-row">
-            <label for="sabado">Sábado</label>
-            <input type="text" id="sabado" class="day-input" placeholder="Datos del sábado...">
-        </div>
+    <div class="setup-box">
+        <input type="text" id="newVendorName" placeholder="Nombre del vendedor..." autocomplete="off">
+        <button class="btn-add" onclick="addVendor()">+ Añadir</button>
     </div>
 
-    <button class="clear-btn" onclick="clearLogs()">Limpiar Toda la Semana</button>
+    <div class="vendors-container" id="vendorsContainer"></div>
+
+    <button class="clear-all-btn" onclick="clearAllData()">Resetear Todo el Sistema</button>
 
     <script>
-        const inputs = document.querySelectorAll('.day-input');
+        // Estructura de datos en memoria local
+        let vendors = JSON.parse(localStorage.getItem('labs_matrix_vendors')) || [];
 
-        // 1. Cargar la memoria local de cada día al abrir la app
-        window.addEventListener('load', () => {
-            inputs.forEach(input => {
-                const savedData = localStorage.getItem('labs_' + input.id);
-                if (savedData) {
-                    input.value = savedData;
-                }
-            });
-            // Pone el foco automáticamente en el Lunes al arrancar
-            if(inputs[0]) inputs[0].focus();
-        });
+        // Guardar estado actual en LocalStorage
+        function saveState() {
+            localStorage.setItem('labs_matrix_vendors', JSON.stringify(vendors));
+        }
 
-        // 2. Monitorear escritura y controlar el flujo del ENTER
-        inputs.forEach((input, index) => {
-            // Guarda en caliente mientras el usuario escribe
-            input.addEventListener('input', () => {
-                localStorage.setItem('labs_' + input.id, input.value);
-            });
+        // Agregar un nuevo vendedor a la matriz
+        function addVendor() {
+            const inputName = document.getElementById('newVendorName');
+            const name = inputName.value.trim();
+            if (!name) return;
 
-            // Bucle infinito con la tecla Enter
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); // Detiene funciones por defecto
-                    const nextIndex = (index + 1) % inputs.length; // Al llegar a sábado (index 5) vuelve a lunes (index 0)
-                    inputs[nextIndex].focus();
-                }
-            });
-        });
+            const newVendor = {
+                id: 'v_' + Date.now(),
+                name: name,
+                weights: { lunes: '', martes: '', miercoles: '', jueves: '', viernes: '', sabado: '' }
+            };
 
-        // 3. Función táctica para resetear la tabla limpia
-        function clearLogs() {
-            if (confirm('¿Deseas resetear por completo los registros de la semana?')) {
-                inputs.forEach(input => {
-                    input.value = '';
-                    localStorage.removeItem('labs_' + input.id);
-                });
-                inputs[0].focus();
+            vendors.push(newVendor);
+            saveState();
+            renderVendors();
+            inputName.value = '';
+            inputName.focus();
+        }
+
+        // Eliminar un vendedor
+        function deleteVendor(id) {
+            if (confirm('¿Eliminar este vendedor y todos sus pesajes?')) {
+                vendors = vendors.filter(v => v.id !== id);
+                saveState();
+                renderVendors();
             }
         }
 
-        // 4. Registro del Service Worker para soporte Fuera de Línea (Offline)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('SW Operativo'))
-                    .catch(err => console.error('Fallo SW', err));
+        // Actualizar el valor del pesaje en tiempo real
+        function updateWeight(vendorId, day, value) {
+            const vendor = vendors.find(v => v.id === vendorId);
+            if (vendor) {
+                vendor.weights[day] = value;
+                saveState();
+                calculateTotal(vendorId);
+            }
+        }
+
+        // Calcular total semanal de un vendedor específico
+        function calculateTotal(vendorId) {
+            const vendor = vendors.find(v => v.id === vendorId);
+            if (!vendor) return;
+            
+            let total = 0;
+            for (let day in vendor.weights) {
+                let val = parseFloat(vendor.weights[day].replace(',', '.'));
+                if (!isNaN(val)) total += val;
+            }
+            
+            // Mostrar en interfaz sin re-renderizar la tarjeta completa
+            document.getElementById(`total_${vendorId}`).innerText = total.toFixed(1);
+        }
+
+        // Dibujar la interfaz dinámica
+        function renderVendors() {
+            const container = document.getElementById('vendorsContainer');
+            container.innerHTML = '';
+
+            vendors.forEach(vendor => {
+                let totalInitial = 0;
+                for (let day in vendor.weights) {
+                    let val = parseFloat(vendor.weights[day].replace(',', '.'));
+                    if (!isNaN(val)) totalInitial += val;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'vendor-card';
+                card.innerHTML = `
+                    <div class="vendor-header">
+                        <span class="vendor-name">${vendor.name}</span>
+                        <button class="btn-del" onclick="deleteVendor('${vendor.id}')">Eliminar</button>
+                    </div>
+                    <div class="grid-days">
+                        ${['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'].map(day => `
+                            <div class="day-box">
+                                <label>${day.substring(0,3)}</label>
+                                <input type="text" 
+                                       inputmode="decimal" 
+                                       class="weight-input"
+                                       data-vendor="${vendor.id}" 
+                                       data-day="${day}" 
+                                       value="${vendor.weights[day]}" 
+                                       placeholder="0"
+                                       oninput="updateWeight('${vendor.id}', '${day}', this.value)">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="vendor-total">Total Semana: <span id="total_${vendor.id}">${totalInitial.toFixed(1)}</span> kg</div>
+                `;
+                container.appendChild(card);
+            });
+
+            setupNavigation();
+        }
+
+        // Configurar el salto táctico con la tecla ENTER
+        function setupNavigation() {
+            const inputs = document.querySelectorAll('.weight-input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const nextIndex = (index + 1) % inputs.length;
+                        if (inputs[nextIndex]) inputs[nextIndex].focus();
+                    }
+                });
             });
         }
+
+        // Resetear base de datos por completo
+        function clearAllData() {
+            if (confirm('¿ADVERTENCIA: Deseas borrar absolutamente todos los vendedores y datos guardados?')) {
+                vendors = [];
+                saveState();
+                renderVendors();
+            }
+        }
+
+        // Inicialización del entorno al cargar la app
+        window.addEventListener('load', () => {
+            renderVendors();
+            
+            // Registro del Service Worker (Modo Offline)
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(() => console.log('SW Listo'))
+                    .catch(err => console.error('Error SW', err));
+            }
+        });
     </script>
 </body>
 </html>
