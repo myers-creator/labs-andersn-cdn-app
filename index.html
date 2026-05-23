@@ -49,7 +49,7 @@
             gap: 8px;
         }
         .setup-box input {
-            flex: 1;
+            flex: 2;
             background: #0a0d10;
             border: 1px solid #00ff66;
             border-radius: 4px;
@@ -58,6 +58,18 @@
             font-size: 14px;
             font-family: Arial, sans-serif;
             outline: none;
+        }
+        .setup-box select {
+            flex: 1;
+            background: #0a0d10;
+            border: 1px solid #1f2937;
+            border-radius: 4px;
+            padding: 10px;
+            color: #00ff66;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
         }
         .btn-add {
             background: #00ff66;
@@ -168,12 +180,18 @@
 
     <div class="header">
         <h1>LABS</h1>
-        <p>Control de Pesajes por Vendedor</p>
+        <p>Control de Pesajes Multiuso</p>
     </div>
 
     <div class="setup-box">
-        <input type="text" id="newVendorName" placeholder="Nombre del vendedor..." autocomplete="off">
-        <button class="btn-add" onclick="addVendor()">+ Añadir</button>
+        <input type="text" id="newVendorName" placeholder="Nombre..." autocomplete="off">
+        <select id="vendorUnit">
+            <option value="kg">Kilos</option>
+            <option value="@">Arrobas (@)</option>
+            <option value="Lb">Libras</option>
+            <option value=" ">Neutro</option>
+        </select>
+        <button class="btn-add" onclick="addVendor()">+ Ok</button>
     </div>
 
     <div class="vendors-container" id="vendorsContainer"></div>
@@ -181,23 +199,22 @@
     <button class="clear-all-btn" onclick="clearAllData()">Resetear Todo el Sistema</button>
 
     <script>
-        // Estructura de datos en memoria local
         let vendors = JSON.parse(localStorage.getItem('labs_matrix_vendors')) || [];
 
-        // Guardar estado actual en LocalStorage
         function saveState() {
             localStorage.setItem('labs_matrix_vendors', JSON.stringify(vendors));
         }
 
-        // Agregar un nuevo vendedor a la matriz
         function addVendor() {
             const inputName = document.getElementById('newVendorName');
+            const selectUnit = document.getElementById('vendorUnit');
             const name = inputName.value.trim();
             if (!name) return;
 
             const newVendor = {
                 id: 'v_' + Date.now(),
                 name: name,
+                unit: selectUnit.value,
                 weights: { lunes: '', martes: '', miercoles: '', jueves: '', viernes: '', sabado: '' }
             };
 
@@ -208,16 +225,14 @@
             inputName.focus();
         }
 
-        // Eliminar un vendedor
         function deleteVendor(id) {
-            if (confirm('¿Eliminar este vendedor y todos sus pesajes?')) {
+            if (confirm('¿Eliminar registro de este usuario?')) {
                 vendors = vendors.filter(v => v.id !== id);
                 saveState();
                 renderVendors();
             }
         }
 
-        // Actualizar el valor del pesaje en tiempo real
         function updateWeight(vendorId, day, value) {
             const vendor = vendors.find(v => v.id === vendorId);
             if (vendor) {
@@ -227,7 +242,6 @@
             }
         }
 
-        // Calcular total semanal de un vendedor específico
         function calculateTotal(vendorId) {
             const vendor = vendors.find(v => v.id === vendorId);
             if (!vendor) return;
@@ -238,11 +252,9 @@
                 if (!isNaN(val)) total += val;
             }
             
-            // Mostrar en interfaz sin re-renderizar la tarjeta completa
             document.getElementById(`total_${vendorId}`).innerText = total.toFixed(1);
         }
 
-        // Dibujar la interfaz dinámica
         function renderVendors() {
             const container = document.getElementById('vendorsContainer');
             container.innerHTML = '';
@@ -253,6 +265,8 @@
                     let val = parseFloat(vendor.weights[day].replace(',', '.'));
                     if (!isNaN(val)) totalInitial += val;
                 }
+
+                const currentUnit = vendor.unit !== undefined ? vendor.unit : 'kg';
 
                 const card = document.createElement('div');
                 card.className = 'vendor-card';
@@ -276,7 +290,7 @@
                             </div>
                         `).join('')}
                     </div>
-                    <div class="vendor-total">Total Semana: <span id="total_${vendor.id}">${totalInitial.toFixed(1)}</span> kg</div>
+                    <div class="vendor-total">Total Semana: <span id="total_${vendor.id}">${totalInitial.toFixed(1)}</span> ${currentUnit}</div>
                 `;
                 container.appendChild(card);
             });
@@ -284,7 +298,6 @@
             setupNavigation();
         }
 
-        // Configurar el salto táctico con la tecla ENTER
         function setupNavigation() {
             const inputs = document.querySelectorAll('.weight-input');
             inputs.forEach((input, index) => {
@@ -298,24 +311,20 @@
             });
         }
 
-        // Resetear base de datos por completo
         function clearAllData() {
-            if (confirm('¿ADVERTENCIA: Deseas borrar absolutamente todos los vendedores y datos guardados?')) {
+            if (confirm('¿Deseas resetear la base de datos por completo?')) {
                 vendors = [];
                 saveState();
                 renderVendors();
             }
         }
 
-        // Inicialización del entorno al cargar la app
         window.addEventListener('load', () => {
             renderVendors();
-            
-            // Registro del Service Worker (Modo Offline)
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
-                    .then(() => console.log('SW Listo'))
-                    .catch(err => console.error('Error SW', err));
+                    .then(() => console.log('SW Activo'))
+                    .catch(err => console.error('SW Error', err));
             }
         });
     </script>
