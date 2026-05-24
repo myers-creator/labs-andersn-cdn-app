@@ -240,7 +240,7 @@
     <button class="clear-all-btn" onclick="clearAllData()">Resetear Registro de Compras</button>
 
     <script>
-        // Inicializar base de datos local
+        
         let vendors = JSON.parse(localStorage.getItem('labs_matrix_trade')) || [];
 
         function saveState() {
@@ -298,21 +298,21 @@
             const vendor = vendors.find(v => v.id === vendorId);
             if (!vendor) return;
 
-            // Sumatoria de peso de la semana
+    
             let totalWeight = 0;
             for (let day in vendor.weights) {
                 let val = parseFloat(vendor.weights[day].replace(',', '.'));
                 if (!isNaN(val)) totalWeight += val;
             }
 
-            // Cálculo financiero exacto
+            
             let priceVal = parseFloat(vendor.price.replace(',', '.'));
             let totalPay = 0;
             if (!isNaN(priceVal) && totalWeight > 0) {
                 totalPay = totalWeight * priceVal;
             }
 
-            // Inyección de datos en la interfaz
+    
             document.getElementById(`weight_${vendorId}`).innerText = totalWeight.toFixed(1);
             document.getElementById(`pay_${vendorId}`).innerText = new Intl.NumberFormat('es-CO', {
                 style: 'currency',
